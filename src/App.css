@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@200;400;900&family=Playfair+Display:wght@700&display=swap');
+
+:root {
+  --accent: #007aff;
+  --transition: 0.5s cubic-bezier(0.165, 0.84, 0.44, 1);
+  --glass: rgba(255, 255, 255, 0.05);
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: #050505;
+  color: white;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* --- THE LOGO --- */
+.logo-container {
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 8px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.logo-container span { color: var(--accent); }
+
+/* --- THE INNOVATIVE GEAR ICON --- */
+.gear-btn {
+  position: fixed;
+  top: 30px;
+  right: 30px;
+  width: 50px;
+  height: 50px;
+  background: var(--glass);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 1001;
+  transition: var(--transition);
+  font-size: 24px;
+}
+
+.gear-btn:hover {
+  transform: rotate(90deg) scale(1.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.3);
+}
+
+/* --- PROFESSIONAL DASHBOARD ELEMENTS --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+  padding: 40px;
+}
+
+.stat-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 30px;
+  border-radius: 20px;
+  backdrop-filter: blur(15px);
+  transition: var(--transition);
+}
+
+.stat-card:hover {
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-5px);
+}
+
+.photo-preview {
+  height: 350px;
+  border-radius: 24px;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.photo-preview::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+  opacity: 0.6;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -350px;
+  width: 350px;
+  height: 100%;
+  background: rgba(10, 10, 10, 0.9);
+  backdrop-filter: blur(30px);
+  border-left: 1px solid var(--glass-border);
+  z-index: 1002;
+  transition: var(--transition);
+  padding: 40px;
+}
+
+.sidebar.open { right: 0; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: 0.3s;
+}
+
+.overlay.visible { opacity: 1; visibility: visible; }

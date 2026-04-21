@@ -1,0 +1,33 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: auto; /* Enable horizontal scrolling for 215vh */
+  overflow-y: overlay;
+  background-color: #000; /* Fallback */
+}
+
+#root {
+  display: inline-block;
+  min-width: 100%;
+}
+
+/* Make Ant Design Menu transparent */
+.ant-menu {
+  background: transparent !important;
+}
+
+.ant-layout-sider-children {
+  background: transparent !important;
+}
+
+/* Custom Scrollbar for the horizontal experience */
+::-webkit-scrollbar {
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.1);
+}
+::-webkit-scrollbar-thumb {
+  background: #1890ff;
+  border-radius: 5px;
+}

@@ -1,0 +1,191 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background: #000000;
+}
+
+form {
+    padding: 20px;
+    margin: auto;
+    width: 320px;
+    border-radius: 10px;
+    text-align: left;
+    transition: 0.4s;
+}
+
+input, select {
+    width: 100%;
+    padding: 8px;
+    margin: 8px 0;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+input[type="radio"] {
+    width: auto;
+}
+
+.btn-group {
+    text-align: center;
+}
+
+.btn-group button {
+    padding: 8px;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+/* THEME 1 */
+/* Page background */
+body {
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #ffffff;
+    font-family: Arial, sans-serif;
+    color: white;
+}
+
+h1 {
+    color: #000000;   /* blue */
+    text-align: center; /* optional */
+    margin-bottom: 15px;
+}
+
+/* Card container */
+.theme1 {
+    background: #000000;
+    border-radius: 20px;
+    padding: 25px;
+    width: 320px;
+
+    box-shadow: 
+        0 10px 25px rgba(0, 0, 0, 0.5),
+        0 0 15px rgba(0, 150, 255, 0.3);
+
+    transition: 0.3s;
+}
+
+.theme1:hover {
+    transform: translateY(-8px);
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    color: #f9f9f9;
+}
+
+/* Inputs & Select */
+input,
+select {
+    width: 100%;
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #333;
+    background: #2a2a2a;
+    color: white;
+    outline: none;
+}
+
+/* Radio buttons inline */
+input[type="radio"] {
+    width: auto;
+    margin-right: 5px;
+}
+
+/* Focus effect */
+input:focus,
+select:focus {
+    border-color: #4da6ff;
+    box-shadow: 0 0 5px #4da6ff;
+}
+
+/* ===== THEME 2 ===== */
+.theme2 {
+    background: #07ca28;
+    color: white;
+
+    width: 350px;
+    margin-left: 20px;
+    margin-right: auto;
+
+    padding: 20px;
+    border-radius: 8px;
+
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.theme2 input,
+.theme2 select {
+    background: #f5f2f2;
+    color: black;
+    border: 1px solid #000;
+
+    display: block;    
+    width: 100%;
+
+    padding: 10px;
+    margin: 8px 0;
+
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/*  THEME 3 */
+.theme3 {
+    background: linear-gradient(135deg, #9e0308, #fad0c4);
+    color: black;
+    border-radius: 20px;
+
+    font-family: "Times New Roman", Times, serif;
+
+    width: 1200px; /* reduced for better React layout */
+    margin: auto;
+
+    padding: 20px;
+}
+
+.theme3 input,
+.theme3 select {
+    border-radius: 20px;
+    border: none;
+
+    font-family: 'Times New Roman', Times, serif; 
+    padding: 10px;
+    margin: 8px 0;
+    width: 100%;
+}
+
+/*  THEME 4*/
+.theme4 {
+    background: linear-gradient(135deg, #ff9a9e, #a18cd1, #67d7e7);
+    border-radius: 15px;
+    padding: 20px;
+    border: 1px solid rgba(255,255,255,0.3);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    color: #333;
+}
+
+.theme4 input, 
+.theme4 select {
+    background: rgba(0, 0, 0, 0.7);
+    border: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    margin: 5px 0;
+    outline: none;
+    transition: 0.3s;
+}
+
+.theme4 input:focus,
+.theme4 select:focus {
+    background: #000000;
+    box-shadow: 0 0 5px #a18cd1;
+}
