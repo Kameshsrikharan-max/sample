@@ -21,6 +21,8 @@ import {
   PieChart, Pie, Cell, Tooltip as RechartsTooltip, ResponsiveContainer, Legend,
   BarChart, Bar, XAxis, YAxis, CartesianGrid 
 } from 'recharts';
+import { Sector } from "recharts";
+
 
 const { Sider, Header, Content, Footer } = Layout;
 const { Title, Text } = Typography;
@@ -111,7 +113,14 @@ export default function WavesStudioUltimate() {
   const [selectedFolder, setSelectedFolder] = useState(null);
   const [collapsed, setCollapsed] = useState(false);
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const [profileModalOpen, setProfileModalOpen] = useState(false);
+  
+  const [isProfileModalOpen, setProfileModalOpen] = useState(false);
+
+  const [userImages, setUserImages] = useState(() => {
+    const saved = localStorage.getItem("waves_user_images");
+    return saved ? JSON.parse(saved) : [];
+  });
+
 
   const [clientViewMode, setClientViewMode] = useState("list");
 
@@ -119,10 +128,6 @@ export default function WavesStudioUltimate() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [allGalleryImages, setAllGalleryImages] = useState([]);
 
-  const [userImages, setUserImages] = useState(() => {
-    const saved = localStorage.getItem("waves_user_images");
-    return saved ? JSON.parse(saved) : [];
-  });
 
   const [configs, setConfigs] = useState(() => {
     const saved = localStorage.getItem("waves_studio_configs");
@@ -313,17 +318,131 @@ export default function WavesStudioUltimate() {
               selectedKeys={[activePage]} 
               items={navItems} 
               onClick={(e) => {setActivePage(e.key); setSelectedFolder(null);}}
-              style={{ background: 'transparent', border: 'none', color: '#fff', flex: 1, justifyContent: 'center' }}
+              style={{ background: 'transparent', border: 'none', color: '#ffffff', flex: 1, justifyContent: 'center' }}
               theme="dark"
             />
+            
 
-            <Space>
-              <Switch checkedChildren={<BulbFilled />} unCheckedChildren={<BulbOutlined />} checked={cur.isDark} onChange={(v) => updateConfig("isDark", v)} />
-              <Tooltip title="Profile">
-                <Button type="text" icon={<ProfileIcon style={{ fontSize: 20, color: '#fff' }} />} onClick={() => setProfileModalOpen(true)} />
-              </Tooltip>
-              <Button type="primary" icon={<SettingOutlined />} onClick={() => setDrawerOpen(true)} style={{ background: '#fff', color: cur.primary }}>Customize</Button>
-            </Space>
+       <>
+  <style>
+    {`
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .action-btn, .settings-btn, .icon-wrapper {
+      transition: all 0.3s ease;
+    }
+
+    .action-btn:hover,
+    .settings-btn:hover,
+    .icon-wrapper:hover {
+      transform: translateY(-3px) scale(1.05);
+    }
+
+    .action-btn:active,
+    .settings-btn:active {
+      transform: scale(0.92);
+    }
+
+    .animated-icon {
+      font-size: 20px;
+      color: #fff;
+      transition: transform 0.3s ease;
+    }
+
+    .action-btn:hover .animated-icon {
+      transform: rotate(10deg) scale(1.2);
+    }
+
+    /* ✅ NON-STOP SPIN */
+    .spin-icon {
+      display: inline-block;
+      animation: spin360 1.2s linear infinite;
+    }
+
+    @keyframes spin360 {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    .animated-switch {
+      transition: all 0.4s ease;
+    }
+
+    .animated-switch:hover {
+      box-shadow: 0 0 10px rgba(255, 215, 0, 0.6);
+      transform: scale(1.1);
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .settings-btn {
+      border-radius: 100px;
+    }
+
+    .settings-btn:hover {
+      animation: pulse 0.6s ease;
+    }
+    `}
+  </style>
+
+  <Space className="header-actions">
+    <div className="icon-wrapper">
+      <Switch
+        checkedChildren={<BulbFilled />}
+        unCheckedChildren={<BulbOutlined />}
+        checked={cur.isDark}
+        onChange={(v) => updateConfig("isDark", v)}
+        className="animated-switch"
+      />
+    </div>
+
+    <Tooltip title="Profile">
+  <Button
+    type="text"
+    icon={<ProfileIcon className="animated-icon" />}
+    onClick={() => setProfileModalOpen(true)} // This calls the state we made in Step 1
+    className="action-btn"
+  />
+</Tooltip>
+
+   {/* THE MODAL CONTENT */}
+      <Modal
+        title="User Profile"
+        open={isProfileModalOpen}
+        onCancel={() => setProfileModalOpen(false)}
+        footer={null}
+        width={500}
+        centered
+        styles={{ body: { padding: '24px' } }} // This fixes the bodyStyle warning
+      >
+        <div style={{ textAlign: 'center' }}>
+          <ProfileIcon style={{ fontSize: '48px', color: cur.primary }} />
+          <Title level={3}>My Profile</Title>
+          <Text type="secondary">Studio Management</Text>
+          <Divider />
+          <Button block type="primary" onClick={() => setProfileModalOpen(false)}>
+            Close
+          </Button>
+        </div>
+      </Modal>
+
+    <Button
+      type="primary"
+      icon={<SettingOutlined className="spin-icon" />}
+      onClick={() => setDrawerOpen(true)}
+      className="settings-btn"
+      style={{ background: '#1890ff', color: cur.white }}
+    />
+  </Space>
+</>
           </Header>
 
           <Layout style={{ background: 'transparent' }}>
@@ -342,92 +461,455 @@ export default function WavesStudioUltimate() {
                   
                   {activePage === 'dashboard' ? (
                     <div>
-                      {/* 1. Photographer Platform Cards */}
-                      <Title level={3} style={{ marginBottom: 24 }}>Photographer Platform Overview</Title>
-                      <Row gutter={[24, 24]} style={{ marginBottom: 60 }}>
-                        {[
-                          { title: "Total Clients", value: "142", icon: "👥", color: "#1890ff" },
-                          { title: "Shoots This Year", value: "87", icon: "📸", color: "#52c41a" },
-                          { title: "Deliverables Sent", value: "203", icon: "📤", color: "#faad14" },
-                          { title: "Total Revenue", value: "$248k", icon: "💰", color: "#eb2f96" },
-                          { title: "Avg. Session Time", value: "4.2h", icon: "⏱️", color: "#722ed1" },
-                          { title: "5-Star Reviews", value: "94", icon: "⭐", color: "#f5222d" },
-                        ].map((item, i) => (
-                          <Col xs={24} sm={12} md={8} lg={4} key={i}>
-                            <Card style={{ ...getCardStyles(cur.cardStyle), textAlign: 'center', height: '100%' }}>
-                              <div style={{ fontSize: 36, marginBottom: 12 }}>{item.icon}</div>
-                              <Title level={3} style={{ margin: 0, color: item.color }}>{item.value}</Title>
-                              <Text type="secondary">{item.title}</Text>
-                            </Card>
-                          </Col>
-                        ))}
-                      </Row>
 
-                      {/* 2. Work Progress Completed Card */}
-                      <Title level={4} style={{ marginBottom: 16 }}>Work Progress Completed</Title>
-                      <Card style={getCardStyles(cur.cardStyle)} style={{ marginBottom: 60 }}>
-                        <Row gutter={24}>
-                          <Col span={12}>
-                            <Text strong>Shoots Completed This Month</Text>
-                            <Progress percent={78} strokeColor={cur.primary} style={{ marginTop: 12 }} />
-                            <Text type="secondary">78 out of 100 shoots completed</Text>
-                          </Col>
-                          <Col span={12}>
-                            <Text strong>Deliverables Ready</Text>
-                            <Progress percent={92} strokeColor="#52c41a" style={{ marginTop: 12 }} />
-                            <Text type="secondary">92% deliverables sent to clients</Text>
-                          </Col>
-                        </Row>
-                      </Card>
+                      
+                      {/* Flip Card Styles */}
+                      <h2>Dashboard Overview</h2>
+<style>
+{`
+.flip-card {
+  perspective: 1000px;
+  height: 240px;
+}
 
-                  
+.flip-card-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+
+.flip-card:hover .flip-card-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-card-front,
+.flip-card-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+}
+
+.flip-card-back {
+  transform: rotateY(180deg);
+}
+`}
+</style>
+
+<Row gutter={[24, 24]} style={{ marginBottom: 60 }}>
+  {[
+    {
+      title: "Total Clients",
+      value: "142",
+      icon: "👥",
+      color: "#1890ff",
+      back: { label1: "New This Month", val1: "18", label2: "Retention", val2: "92%" }
+    },
+    {
+      title: "Shoots This Year",
+      value: "87",
+      icon: "📸",
+      color: "#52c41a",
+      back: { label1: "This Month", val1: "9", label2: "Completion Rate", val2: "88%" }
+    },
+    {
+      title: "Deliverables Sent",
+      value: "203",
+      icon: "📤",
+      color: "#faad14",
+      back: { label1: "Pending", val1: "12", label2: "On-Time Delivery", val2: "95%" }
+    },
+    {
+      title: "Total Revenue",
+      value: "$248k",
+      icon: "💰",
+      color: "#eb2f96",
+      back: { label1: "This Month", val1: "$21k", label2: "Growth", val2: "+12%" }
+    },
+    {
+      title: "Avg. Session Time",
+      value: "4.2h",
+      icon: "⏱️",
+      color: "#722ed1",
+      back: { label1: "Longest", val1: "7h", label2: "Efficiency", val2: "86%" }
+    },
+    {
+      title: "5-Star Reviews",
+      value: "94",
+      icon: "⭐",
+      color: "#f5222d",
+      back: { label1: "This Month", val1: "11", label2: "Satisfaction", val2: "97%" }
+    }
+  ].map((item, i) => (
+    <Col xs={24} sm={12} md={8} lg={4} key={i}>
+      
+      <div className="flip-card">
+        <div className="flip-card-inner">
+
+          {/* Front */}
+          <div className="flip-card-front">
+            <Card style={{ ...getCardStyles(cur.cardStyle), textAlign: "center", height: "70%" }}>
+              <div style={{ fontSize: 46, marginBottom: 12 }}>{item.icon}</div>
+              <Title level={3} style={{ margin: 0, color: item.color }}>
+                {item.value}
+              </Title>
+              <Text type="secondary">{item.title}</Text>
+            </Card>
+          </div>
+
+          {/* Back */}
+          <div className="flip-card-back">
+            <Card style={{ ...getCardStyles(cur.cardStyle), height: "100%" }}>
+              
+              <Title level={5} style={{ marginBottom: 10 }}>
+                {item.title} Insights
+              </Title>
+
+              <div style={{ marginBottom: 8 }}>
+                <Text type="secondary">{item.back.label1}</Text><br />
+                <Text strong>{item.back.val1}</Text>
+              </div>
+
+              <div style={{ marginBottom: 8 }}>
+                <Text type="secondary">{item.back.label2}</Text><br />
+                <Text strong>{item.back.val2}</Text>
+              </div>
+
+              <Progress 
+                percent={parseInt(item.back.val2) || 80} 
+                strokeColor={item.color} 
+                size="small"
+              />
+
+            </Card>
+          </div>
+
+        </div>
+      </div>
+
+    </Col>
+  ))}
+</Row>
+{/* 2. Work Progress Completed */}
+<Title level={4} style={{ marginBottom: 16 }}>
+  Work Progress Completed
+</Title>
+
+<style>
+{`
+.cube-wrapper {
+  perspective: 1000px;
+}
+
+.cube-inner {
+  position: relative;
+  width: 100%;
+  height: 160px;
+  transform-style: preserve-3d;
+  transition: transform 0.6s ease;
+}
+
+/* Hover cube rotate */
+.cube-wrapper:hover .cube-inner {
+  transform: rotateX(-90deg);
+}
+
+.cube-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Half height = 80px */
+.cube-front {
+  transform: translateZ(80px);
+}
+
+.cube-top {
+  transform: rotateX(90deg) translateZ(80px);
+}
+`}
+</style>
+
+<Row gutter={[24, 24]}>
+  {[
+    {
+      title: "Monthly Shoot Completion",
+      percent: 68,
+      color: cur.primary,
+      desc: "68 out of 100 shoots completed"
+    },
+    {
+      title: "Deliverables Ready",
+      percent: 92,
+      color: "#52c41a",
+      desc: "92% deliverables sent"
+    },
+    {
+      title: "Pending Shoots",
+      percent: 35,
+      color: "#faad14",
+      desc: "35 shoots pending"
+    },
+    {
+      title: "Editing Progress",
+      percent: 75,
+      color: "#722ed1",
+      desc: "75% editing completed"
+    },
+    {
+      title: "Client Approvals",
+      percent: 60,
+      color: "#13c2c2",
+      desc: "60% approved by clients"
+    },
+    {
+      title: "Monthly Target",
+      percent: 80,
+      color: "#eb2f96",
+      desc: "80% of monthly goal reached"
+    }
+  ].map((item, i) => (
+    <Col xs={24} md={12} lg={8} key={i}>
+      
+      {/* MAIN CARD */}
+      <Card
+        style={{
+          ...getCardStyles(cur.cardStyle),
+          overflow: "hidden"
+        }}
+        bodyStyle={{ padding: 0 }}
+      >
+        <div className="cube-wrapper">
+          <div className="cube-inner">
+
+            {/* FRONT */}
+            <div className="cube-face cube-front" style={{ padding: 16 }}>
+              <Text strong>{item.title}</Text>
+              <Progress percent={item.percent} strokeColor={item.color} style={{ marginTop: 12 }} />
+              <Text type="secondary">{item.desc}</Text>
+            </div>
+
+            {/* TOP */}
+            <div className="cube-face cube-top" style={{ padding: 16 }}>
+              <Text strong>{item.title} Insights</Text>
+
+              <div style={{ marginTop: 10 }}>
+                <Text type="secondary">Performance</Text><br />
+                <Text strong>{item.percent}%</Text>
+              </div>
+
+              <div style={{ marginTop: 10 }}>
+                <Text type="secondary">Status</Text><br />
+                <Text strong>
+                  {item.percent > 80 ? "Excellent" : item.percent > 60 ? "Good" : "Needs Attention"}
+                </Text>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </Card>
+
+    </Col>
+  ))}
+</Row>
+<br></br>
+<br></br>
+
+
+    <br></br>              
                       <Row gutter={[24, 24]} style={{ marginBottom: 60 }}>
                         <Col xs={24} lg={12}>
                           <Card title="Event Distribution 2026" style={getCardStyles(cur.cardStyle)}>
-                            <ResponsiveContainer width="100%" height={380}>
-                              <PieChart>
-                                <Pie data={CLIENT_PIE_DATA} cx="50%" cy="50%" innerRadius={75} outerRadius={135} dataKey="value">
-                                  {CLIENT_PIE_DATA.map((entry, index) => <Cell key={`cell-${index}`} fill={entry.color} />)}
-                                </Pie>
-                                <RechartsTooltip />
-                                <Legend />
-                              </PieChart>
-                            </ResponsiveContainer>
-                          </Card>
+  <ResponsiveContainer width="100%" height={380}>
+    <PieChart>
+
+      <Pie
+        data={CLIENT_PIE_DATA}
+        cx="50%"
+        cy="50%"
+        innerRadius={75}
+        outerRadius={135}
+        dataKey="value"
+
+        /* 🔥 Animation */
+        isAnimationActive={true}
+        animationBegin={0}
+        animationDuration={1200}
+        animationEasing="ease-out"
+
+        /* 🔥 Hover expand effect */
+        activeIndex={-1}
+        activeShape={(props) => {
+          const { outerRadius = 0 } = props;
+          return <Sector {...props} outerRadius={outerRadius + 12} />;
+        }}
+
+        /* 🔥 Label inside */
+        label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
+      >
+        {CLIENT_PIE_DATA.map((entry, index) => (
+          <Cell
+            key={`cell-${index}`}
+            fill={entry.color}
+            style={{
+              cursor: "pointer",
+              transition: "all 0.3s ease"
+            }}
+          />
+        ))}
+      </Pie>
+
+      <RechartsTooltip />
+      <Legend />
+
+      {/* 🔥 Center Text */}
+      <text
+        x="50%"
+        y="50%"
+        textAnchor="middle"
+        dominantBaseline="middle"
+        style={{ fontSize: 18, fontWeight: 600, fill: "white" }}
+      >
+        Events
+      </text>
+
+    </PieChart>
+  </ResponsiveContainer>
+</Card>
                         </Col>
 
                       
                         <Col xs={24} lg={12}>
                           <Card title="Monthly Shoots & Revenue (2026)" style={getCardStyles(cur.cardStyle)}>
-                            <ResponsiveContainer width="100%" height={380}>
-                              <BarChart data={MONTHLY_DATA}>
-                                <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
-                                <XAxis dataKey="month" />
-                                <YAxis yAxisId="left" />
-                                <YAxis yAxisId="right" orientation="right" />
-                                <RechartsTooltip />
-                                <Legend />
-                                <Bar yAxisId="left" dataKey="shoots" fill="#52c41a" name="Shoots" radius={8} />
-                                <Bar yAxisId="right" dataKey="revenue" fill="#1890ff" name="Revenue ($)" radius={8} />
-                              </BarChart>
-                            </ResponsiveContainer>
-                          </Card>
+  <ResponsiveContainer width="100%" height={380}>
+    <BarChart
+      data={MONTHLY_DATA}
+
+      /* 🔥 Entry Animation (chart level) */
+      margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
+
+      <XAxis dataKey="month" />
+      <YAxis yAxisId="left" />
+      <YAxis yAxisId="right" orientation="right" />
+
+      <RechartsTooltip />
+      <Legend />
+
+      {/* 🔥 Shoots Bar */}
+      <Bar
+        yAxisId="left"
+        dataKey="shoots"
+        fill="#52c41a"
+        name="Shoots"
+        radius={[8, 8, 0, 0]}
+
+        /* Animation */
+        isAnimationActive={true}
+        animationDuration={1200}
+        animationEasing="ease-out"
+
+        /* Hover highlight */
+        onMouseOver={(e) => (e.target.style.opacity = 0.7)}
+        onMouseOut={(e) => (e.target.style.opacity = 1)}
+      />
+
+      {/* 🔥 Revenue Bar */}
+      <Bar
+        yAxisId="right"
+        dataKey="revenue"
+        fill="#1890ff"
+        name="Revenue ($)"
+        radius={[8, 8, 0, 0]}
+
+        /* Animation (slight delay for stagger effect) */
+        isAnimationActive={true}
+        animationBegin={300}
+        animationDuration={1200}
+        animationEasing="ease-out"
+
+        /* Hover highlight */
+        onMouseOver={(e) => (e.target.style.opacity = 0.7)}
+        onMouseOut={(e) => (e.target.style.opacity = 1)}
+      />
+    </BarChart>
+  </ResponsiveContainer>
+</Card>
                         </Col>
                       </Row>
 
                   
                       <Title level={4} style={{ marginBottom: 16 }}>Recent Captures</Title>
-                      <Carousel autoplay dots={false} style={{ marginBottom: 60 }}>
-                        {galleryImages.slice(0, 8).map((img, idx) => (
-                          <div key={idx}>
-                            <Card hoverable style={getCardStyles(cur.cardStyle)}>
-                              <div style={{ height: 320, background: `url(${img}) center/cover`, borderRadius: 12 }} 
-                                   onClick={() => openImageModal(galleryImages, idx)} />
-                              <Meta title={`Shot #${idx + 1}`} style={{ padding: '16px' }} />
-                            </Card>
-                          </div>
-                        ))}
-                      </Carousel>
+                     <style>
+{`
+/* 3D perspective */
+.slick-list {
+  perspective: 1200px;
+}
+
+/* Default slides */
+.slick-slide {
+  transition: transform 0.6s ease, opacity 0.6s ease;
+  opacity: 0.5;
+  transform: scale(0.85) rotateY(12deg);
+}
+
+/* Active slide (center feel even without centerMode) */
+.slick-active {
+  opacity: 1;
+  transform: scale(0.95) rotateY(0deg);
+}
+
+/* Card hover animation */
+.carousel-card {
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
+}
+
+.carousel-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+}
+`}
+</style>
+
+<Carousel
+  autoplay
+  autoplaySpeed={2000}   // 🔥 moves every 2 sec
+  speed={800}            // smooth animation
+  dots={false}
+  infinite
+  pauseOnHover
+  style={{ marginBottom: 60 }}
+>
+  {galleryImages.slice(0, 8).map((img, idx) => (
+    <div key={idx}>
+      <Card
+        hoverable
+        className="carousel-card"
+        style={getCardStyles(cur.cardStyle)}
+      >
+        <div
+          style={{
+            height: 320,
+            background: `url(${img}) center/cover`,
+            borderRadius: 12
+          }}
+          onClick={() => openImageModal(galleryImages, idx)}
+        />
+        <Meta title={`Shot #${idx + 1}`} style={{ padding: '16px' }} />
+      </Card>
+    </div>
+  ))}
+</Carousel>
 
                       
                       <Title level={4} style={{ marginBottom: 16 }}>Customer Reviews</Title>
@@ -448,7 +930,7 @@ export default function WavesStudioUltimate() {
                       </Row>
                     </div>
                   ) : activePage === 'albums' ? (
-                    /* Your exact original albums code */
+                
                     <div className={`table-view-${cur.tableVariant}`}>
                       <div style={{ marginBottom: 20, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                         <Space direction="vertical" size={0}>
@@ -579,7 +1061,7 @@ export default function WavesStudioUltimate() {
                 </div>
               </Content>
 
-              <Footer style={{ textAlign: 'center', background: cur.isDark ? '#0a0f1c' : '#f0f2f5', padding: '60px 40px' }}>
+              <Footer style={{ textAlign: 'center', background: cur.isDark ? '#000000' : '#ffffff', padding: '60px 40px' }}>
                 <Text type="secondary">© 2026 Wave Studios • Professional Photography Platform</Text>
               </Footer>
             </Layout>
@@ -587,17 +1069,7 @@ export default function WavesStudioUltimate() {
         </Layout>
       </div>
 
-      {/* Profile Modal */}
-      <Modal title="Profile" open={profileModalOpen} onCancel={() => setProfileModalOpen(false)} footer={null} width={400}>
-        <div style={{ textAlign: 'center', padding: '20px 0' }}>
-          <ProfileIcon style={{ fontSize: 80, color: cur.primary, marginBottom: 16 }} />
-          <Title level={4}>Welcome to Wave Studios</Title>
-          <Text type="secondary">Photographer Account</Text>
-          <div style={{ marginTop: 24 }}>
-            <Button block type="primary" onClick={() => setProfileModalOpen(false)}>Close</Button>
-          </div>
-        </div>
-      </Modal>
+     
 
       {/* Gallery Image Modal */}
       <Modal open={isImageModalOpen} onCancel={closeImageModal} footer={null} width={900} centered closeIcon={<CloseCircleFilled style={{ fontSize: 24, color: '#fff' }} />} bodyStyle={{ padding: 0, background: '#000' }}>
