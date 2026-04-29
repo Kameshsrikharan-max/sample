@@ -739,20 +739,20 @@ export default function WavesStudioUltimate() {
         outerRadius={135}
         dataKey="value"
 
-        /* 🔥 Animation */
+        /*  Animation */
         isAnimationActive={true}
         animationBegin={0}
         animationDuration={1200}
         animationEasing="ease-out"
 
-        /* 🔥 Hover expand effect */
+        /*  Hover expand effect */
         activeIndex={-1}
         activeShape={(props) => {
           const { outerRadius = 0 } = props;
           return <Sector {...props} outerRadius={outerRadius + 12} />;
         }}
 
-        /* 🔥 Label inside */
+        /*  Label inside */
         label={({ percent }) => `${(percent * 100).toFixed(0)}%`}
       >
         {CLIENT_PIE_DATA.map((entry, index) => (
@@ -770,7 +770,7 @@ export default function WavesStudioUltimate() {
       <RechartsTooltip />
       <Legend />
 
-      {/* 🔥 Center Text */}
+      {/*  Center Text */}
       <text
         x="50%"
         y="50%"
@@ -793,7 +793,7 @@ export default function WavesStudioUltimate() {
     <BarChart
       data={MONTHLY_DATA}
 
-      /* 🔥 Entry Animation (chart level) */
+      /*  Entry Animation (chart level) */
       margin={{ top: 20, right: 30, left: 0, bottom: 5 }}
     >
       <CartesianGrid strokeDasharray="3 3" strokeOpacity={0.2} />
@@ -805,7 +805,7 @@ export default function WavesStudioUltimate() {
       <RechartsTooltip />
       <Legend />
 
-      {/* 🔥 Shoots Bar */}
+      {/*  Shoots Bar */}
       <Bar
         yAxisId="left"
         dataKey="shoots"
@@ -823,7 +823,7 @@ export default function WavesStudioUltimate() {
         onMouseOut={(e) => (e.target.style.opacity = 1)}
       />
 
-      {/* 🔥 Revenue Bar */}
+      {/*  Revenue Bar */}
       <Bar
         yAxisId="right"
         dataKey="revenue"
@@ -831,7 +831,7 @@ export default function WavesStudioUltimate() {
         name="Revenue ($)"
         radius={[8, 8, 0, 0]}
 
-        /* Animation (slight delay for stagger effect) */
+        /* Animation /*
         isAnimationActive={true}
         animationBegin={300}
         animationDuration={1200}
@@ -883,8 +883,8 @@ export default function WavesStudioUltimate() {
 
 <Carousel
   autoplay
-  autoplaySpeed={2000}   // 🔥 moves every 2 sec
-  speed={800}            // smooth animation
+  autoplaySpeed={2000} 
+  speed={800}            
   dots={false}
   infinite
   pauseOnHover
